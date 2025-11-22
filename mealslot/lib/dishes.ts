@@ -95,3 +95,68 @@ export async function dishesByCategoryDbFirst(
   // convert to UI shape
   return filtered.map(toUIDish);
 }
+
+// ---- Multi-category support ----
+export async function dishesByCategoriesDbFirst(
+  categories: string[],
+  tags: string[] = [],
+  allergens: string[] = []
+): Promise<UIDish[]> {
+  if (categories.length === 0) {
+    return [];
+  }
+
+  if (categories.length === 1) {
+    return dishesByCategoryDbFirst(categories[0], tags, allergens);
+  }
+
+  // Fetch dishes from all categories
+  const where: Prisma.DishWhereInput = {
+    category: { in: categories },
+  };
+  const rows = await prisma.dish.findMany({
+    where,
+    orderBy: [{ name: "asc" }],
+  });
+
+  // If no DB results, try static fallback
+  let allDishes: UIDish[] = [];
+  if (rows.length === 0) {
+    for (const cat of categories) {
+      const staticDishes = STATIC_BY_CAT[cat] ?? [];
+      allDishes.push(...staticDishes);
+    }
+  } else {
+    allDishes = rows.map(toUIDish);
+  }
+
+  // Apply filters
+  const norm = (s: string) => s.trim().toLowerCase();
+  const selectedTags = tags.map(norm);
+  const excludedAllergens = allergens.map(norm);
+
+  const filtered = allDishes.filter((d) => {
+    const rTags = d.tags.map(norm);
+    const rAllergens = d.allergens.map(norm);
+
+    // TAGS: keep dish only if it contains ALL selected tags
+    const tagsOk =
+      selectedTags.length === 0 ||
+      selectedTags.every((t) => rTags.includes(t));
+
+    // ALLERGENS: EXCLUDE dish if it contains ANY selected allergen
+    const allergensOk =
+      excludedAllergens.length === 0 ||
+      rAllergens.every((a) => !excludedAllergens.includes(a));
+
+    return tagsOk && allergensOk;
+  });
+
+  // Remove duplicates by id
+  const seen = new Set<string>();
+  return filtered.filter((d) => {
+    if (seen.has(d.id)) return false;
+    seen.add(d.id);
+    return true;
+  });
+}

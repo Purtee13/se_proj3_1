@@ -2,6 +2,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import ThemeProvider from "@/components/theme-provider";
+import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata = {
   title: "MealSlot",
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
         <ThemeProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -744,11 +744,35 @@ export default function PartyClient({ code: initialCode }: { code?: string }) {
           {/* Categories & power-ups */}
           <div className="mb-3">
             <Ribbon>Categories</Ribbon>
+            <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-400">
+              Select one or more meal types
+            </p>
             <div className="flex flex-wrap gap-2">
-              {(["breakfast","lunch","dinner","dessert"] as const).map(k => (
-                <ToggleChip key={k} active={(cats as any)[k]} onClick={()=>setCats(c=>({ ...c, [k]: !(c as any)[k] }))}>{k}</ToggleChip>
-              ))}
+              {(["breakfast","lunch","dinner","dessert"] as const).map(k => {
+                const active = (cats as any)[k];
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={()=>setCats(c=>({ ...c, [k]: !(c as any)[k] }))}
+                    className={[
+                      "rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
+                      active
+                        ? "bg-neutral-900 text-white border-neutral-900 shadow-md scale-105 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100"
+                        : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
+                    ].join(" ")}
+                    aria-pressed={active}
+                  >
+                    {k.charAt(0).toUpperCase() + k.slice(1)}
+                  </button>
+                );
+              })}
             </div>
+            {categoriesArray.length > 0 && (
+              <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+                Selected: {categoriesArray.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")}
+              </div>
+            )}
           </div>
           <div className="mb-3">
             <Ribbon>Power-Ups</Ribbon>

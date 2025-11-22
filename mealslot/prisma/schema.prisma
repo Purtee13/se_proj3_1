@@ -13,6 +13,8 @@ model User {
   email       String       @unique
   name        String
   provider    String       @default("mock")
+  username    String?      @unique
+  passwordHash String?
   createdAt   DateTime     @default(now())
   favorites   Favorite[]
   spins       Spin[]

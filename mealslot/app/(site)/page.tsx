@@ -26,7 +26,7 @@ type Venue = {
 };
 
 function HomePage() {
-  const [category, setCategory] = useState<string>("Breakfast");
+  const [categories, setCategories] = useState<string[]>([]);
   const [dishCount, setDishCount] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
@@ -59,12 +59,15 @@ function HomePage() {
   }, [cooldownMs]);
 
   const onSpin = async (locked: { index: number; dishId: string }[]) => {
+    if (categories.length === 0) {
+      alert("Please select at least one category");
+      return;
+    }
     setBusy(true);
-    // send categories as an array for backwards compatibility, containing the single selection
     const res = await fetch("/api/spin", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ category, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount })
+      body: JSON.stringify({ categories, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount })
     });
     setBusy(false);
     if (!res.ok) {
@@ -138,20 +141,32 @@ function HomePage() {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border bg-white p-4 shadow-sm">
-        <h2 className="mb-2 text-lg font-semibold">Choose Category</h2>
+      <section className="rounded-2xl border bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <h2 className="mb-3 text-lg font-semibold">Choose Categories</h2>
+        <p className="mb-3 text-sm text-neutral-600 dark:text-neutral-400">
+          Select one or more meal types
+        </p>
         <div className="flex flex-wrap gap-2">
           {["Breakfast", "Lunch", "Dinner", "Dessert"].map((c) => {
-            const active = category === c.toLowerCase();
+            const catLower = c.toLowerCase();
+            const active = categories.includes(catLower);
             return (
               <button
-                key={c.toLowerCase()}
+                key={catLower}
+                type="button"
                 className={cn(
-                  "rounded-full border px-3 py-1 text-sm",
-                  active ? "bg-neutral-900 text-white" : "bg-white"
+                  "rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
+                  active
+                    ? "bg-neutral-900 text-white border-neutral-900 shadow-md scale-105 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100"
+                    : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
                 )}
-                // clicking a different option selects it; clicking the active option will deselect (set to "")
-                onClick={() => setCategory((prev) => (prev === c.toLowerCase() ? "" : c.toLowerCase()))}
+                onClick={() => {
+                  setCategories((prev) =>
+                    prev.includes(catLower)
+                      ? prev.filter((cat) => cat !== catLower)
+                      : [...prev, catLower]
+                  );
+                }}
                 aria-pressed={active}
               >
                 {c}
@@ -159,6 +174,11 @@ function HomePage() {
             );
           })}
         </div>
+        {categories.length > 0 && (
+          <div className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
+            Selected: {categories.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")}
+          </div>
+        )}
       </section>
 
       <FilterMenu
