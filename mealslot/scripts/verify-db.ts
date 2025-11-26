@@ -1,4 +1,30 @@
 import { PrismaClient } from "@prisma/client";
+import { readFileSync } from "fs";
+import { resolve } from "path";
+
+// Try to load .env file manually
+try {
+  const envPath = resolve(process.cwd(), ".env");
+  const envFile = readFileSync(envPath, "utf-8");
+  envFile.split("\n").forEach((line) => {
+    const match = line.match(/^([^#=]+)=(.*)$/);
+    if (match) {
+      const key = match[1].trim();
+      const value = match[2].trim().replace(/^["']|["']$/g, "");
+      if (!process.env[key]) {
+        process.env[key] = value;
+      }
+    }
+  });
+} catch (error) {
+  // .env file doesn't exist, that's okay
+}
+
+// Set default DATABASE_URL if not set
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "file:./prisma/dev.db";
+  console.log("⚠️  DATABASE_URL not set, using default: file:./prisma/dev.db");
+}
 
 const prisma = new PrismaClient();
 

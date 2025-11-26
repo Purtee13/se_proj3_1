@@ -63,27 +63,63 @@ function HomePage() {
       alert("Please select at least one category");
       return;
     }
-    setBusy(true);
-    const res = await fetch("/api/spin", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ categories, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount })
-    });
-    setBusy(false);
-    if (!res.ok) {
-      const j = await res.json().catch(() => ({}));
-      alert(`Spin failed: ${j.message ?? res.status}`);
+    if (dishCount === 0) {
+      alert("Please select at least 1 dish count");
       return;
     }
-    const data = await res.json();
+    setBusy(true);
+    try {
+      console.log("Spinning with:", { categories, dishCount, tags: selectedTags, allergens: selectedAllergens });
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
+      const res = await fetch("/api/spin", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ categories, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        const errorMsg = j.message || j.issues?.[0]?.message || `HTTP ${res.status}`;
+        console.error("Spin failed:", errorMsg, j);
+        alert(`Spin failed: ${errorMsg}`);
+        setBusy(false);
+        return;
+      }
+      
+      const data = await res.json();
+      console.log("Spin response:", data);
 
-    setSelection(data.selection);
-    setRecipes(null);
-    setVenues(null);
-    setOpenVideoModal(false);
-    setCooldownMs(3000);
+      if (!data.selection || !Array.isArray(data.selection) || data.selection.length === 0) {
+        console.error("Invalid response - no selection:", data);
+        alert("Spin returned no dishes. Please try again.");
+        setBusy(false);
+        return;
+      }
 
-    await fetchVideos(data.selection);
+      setSelection(data.selection);
+      setRecipes(null);
+      setVenues(null);
+      setOpenVideoModal(false);
+      setCooldownMs(3000);
+
+      await fetchVideos(data.selection);
+    } catch (error) {
+      console.error("Spin error:", error);
+      if (error instanceof Error && error.name === "AbortError") {
+        alert("Spin request timed out. Please check your connection and try again.");
+      } else {
+        alert(`Spin failed: ${error instanceof Error ? error.message : "Network error"}`);
+      }
+    } finally {
+      setBusy(false);
+    }
   };
 
   const fetchVideos = async (dishes: Dish[]) => {

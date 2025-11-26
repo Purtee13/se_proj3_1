@@ -86,10 +86,33 @@ export async function POST(req: NextRequest) {
     const count = dishCount ?? 1;
     for (let i = 0; i < count; i++) {
       const dishes = await dishesByCategoriesDbFirst(categoryList, tags, allergens);
+      if (dishes.length === 0) {
+        console.error(`No dishes found for categories: ${categoryList.join(", ")}, tags: ${tags.join(", ")}, allergens: ${allergens.join(", ")}`);
+        return Response.json(
+          { message: `No dishes available for selected categories: ${categoryList.join(", ")}. Please try different filters.` },
+          { status: 404 }
+        );
+      }
       reels.push(dishes);
     }
 
+    if (reels.length === 0 || reels.every(reel => reel.length === 0)) {
+      console.error("All reels are empty");
+      return Response.json(
+        { message: "No dishes available. Please try different categories or filters." },
+        { status: 404 }
+      );
+    }
+
     const selection = weightedSpin(reels, lockedInput, powerups);
+    
+    if (!selection || selection.length === 0) {
+      console.error("weightedSpin returned empty selection");
+      return Response.json(
+        { message: "Failed to select dishes. Please try again." },
+        { status: 500 }
+      );
+    }
 
     try {
       await prisma.spin.create({

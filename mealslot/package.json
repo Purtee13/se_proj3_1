@@ -18,7 +18,7 @@
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
     "prisma:seed": "node prisma/seed.mjs",
-    "verify:db": "tsx scripts/verify-db.ts",
+    "verify:db": "DATABASE_URL=\"file:./prisma/dev.db\" tsx scripts/verify-db.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
