@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Next.js Dev",
+      "type": "shell",
+      "command": "pnpm dev",
+      "group": "build"
+    },
+    {
+      "label": "WS Dev",
+      "type": "shell",
+      "command": "cd ws-server && pnpm dev",
+      "group": "build"
+    },
+    {
+      "label": "Start All",
+      "dependsOn": ["Next.js Dev", "WS Dev"],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
