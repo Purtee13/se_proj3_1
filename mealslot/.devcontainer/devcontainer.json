@@ -1,0 +1,41 @@
+{
+  "name": "mealslot-dev",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:latest",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "latest"
+    }
+  },
+
+  "forwardPorts": [3000, 4001],
+
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js",
+      "onAutoForward": "notify"
+    },
+    "4001": {
+      "label": "WebSocket",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // These two scripts automate everything
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "Prisma.prisma",
+        "ms-playwright.playwright"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  }
+}
