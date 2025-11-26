@@ -11,7 +11,7 @@ import { cn } from "@/components/ui/cn";
 import Modal from "@/components/ui/Modal";
 import RecipePanel from "@/components/RecipePanel";
 import MapWithPins from "@/components/MapWithPins";
-import VideoPanel, {Video} from "@/components/VideoPanel";
+import VideoPanel, { Video } from "@/components/VideoPanel";
 
 
 type Venue = {
@@ -68,22 +68,23 @@ function HomePage() {
       return;
     }
     setBusy(true);
+    setSelection([]); // Clear previous selection immediately
     try {
       console.log("Spinning with:", { categories, dishCount, tags: selectedTags, allergens: selectedAllergens });
-      
+
       // Add timeout to prevent hanging
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
+
       const res = await fetch("/api/spin", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ categories, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount }),
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         const errorMsg = j.message || j.issues?.[0]?.message || `HTTP ${res.status}`;
@@ -92,7 +93,7 @@ function HomePage() {
         setBusy(false);
         return;
       }
-      
+
       const data = await res.json();
       console.log("Spin response:", data);
 
@@ -103,6 +104,8 @@ function HomePage() {
         return;
       }
 
+      // Delay setting selection to allow spin animation to complete (1.5s + buffer)
+      await new Promise(resolve => setTimeout(resolve, 1600));
       setSelection(data.selection);
       setRecipes(null);
       setVenues(null);
@@ -248,8 +251,8 @@ function HomePage() {
             ))}
           </ul>
           <div className="flex gap-3">
-            <button 
-              className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 hover:scale-105 active:scale-95" 
+            <button
+              className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 hover:scale-105 active:scale-95"
               onClick={() => setOpenVideoModal(true)}
             >
               🍳 Cook at Home
