@@ -12,6 +12,11 @@ pnpm install
 echo "🔌 Setting up environment variables..."
 cp -n .env.example .env.local || true
 
+# 🔥 Load .env.local into current shell (important!)
+set -a
+source .env.local
+set +a
+
 echo "🗄 Running Prisma migrations..."
 pnpm prisma db push
 
