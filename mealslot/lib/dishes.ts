@@ -23,25 +23,25 @@ function toUIDish(row: { id: string; name: string; category: string; tags: strin
 }
 
 const parseArrayField = (v: any): string[] => {
-	if (!v) return [];
-	if (Array.isArray(v)) {
-		// sometimes Prisma returns array of one string like '["dairy","gluten"]'
-		if (v.length === 1 && v[0].startsWith('["')) {
-			return v[0]
-				.replace(/^\[|]$/g, '')          // remove [ and ]
-				.split(',')
-				.map((s: string) => s.replace(/"/g, '').trim().toLowerCase());
-		}
-		return v.map((s: string) => s.trim().toLowerCase());
-	}
-	if (typeof v === "string") {
-		try {
-			const parsed = JSON.parse(v);
-			if (Array.isArray(parsed)) return parsed.map((s: string) => s.trim().toLowerCase());
-		} catch {}
-		return v.split(',').map((s: string) => s.trim().toLowerCase());
-	}
-	return [];
+  if (!v) return [];
+  if (Array.isArray(v)) {
+    // sometimes Prisma returns array of one string like '["dairy","gluten"]'
+    if (v.length === 1 && v[0].startsWith('["')) {
+      return v[0]
+        .replace(/^\[|]$/g, '')          // remove [ and ]
+        .split(',')
+        .map((s: string) => s.replace(/"/g, '').trim().toLowerCase());
+    }
+    return v.map((s: string) => s.trim().toLowerCase());
+  }
+  if (typeof v === "string") {
+    try {
+      const parsed = JSON.parse(v);
+      if (Array.isArray(parsed)) return parsed.map((s: string) => s.trim().toLowerCase());
+    } catch { }
+    return v.split(',').map((s: string) => s.trim().toLowerCase());
+  }
+  return [];
 };
 
 
@@ -110,53 +110,75 @@ export async function dishesByCategoriesDbFirst(
     return dishesByCategoryDbFirst(categories[0], tags, allergens);
   }
 
-  // Fetch dishes from all categories
-  const where: Prisma.DishWhereInput = {
-    category: { in: categories },
-  };
-  const rows = await prisma.dish.findMany({
-    where,
-    orderBy: [{ name: "asc" }],
-  });
+  try {
+    // Normalize category names to lowercase for matching
+    const normalizedCategories = categories.map(c => c.trim().toLowerCase());
 
-  // If no DB results, try static fallback
-  let allDishes: UIDish[] = [];
-  if (rows.length === 0) {
-    for (const cat of categories) {
-      const staticDishes = STATIC_BY_CAT[cat] ?? [];
-      allDishes.push(...staticDishes);
+    console.log(`[dishesByCategoriesDbFirst] Fetching from DB with categories:`, normalizedCategories, `tags:`, tags, `allergens:`, allergens);
+
+    // Fetch dishes from all categories
+    const where: Prisma.DishWhereInput = {
+      category: { in: normalizedCategories },
+    };
+    const rows = await prisma.dish.findMany({
+      where,
+      orderBy: [{ name: "asc" }],
+    });
+
+    console.log(`[dishesByCategoriesDbFirst] DB returned ${rows.length} dishes`);
+
+    // If no DB results, try static fallback
+    let allDishes: UIDish[] = [];
+    if (rows.length === 0) {
+      console.log(`[dishesByCategoriesDbFirst] No DB results, falling back to static`);
+      for (const cat of normalizedCategories) {
+        const staticDishes = STATIC_BY_CAT[cat] ?? [];
+        console.log(`[dishesByCategoriesDbFirst] Static dishes for ${cat}: ${staticDishes.length}`);
+        allDishes.push(...staticDishes);
+      }
+    } else {
+      allDishes = rows.map(toUIDish);
     }
-  } else {
-    allDishes = rows.map(toUIDish);
+
+    if (allDishes.length === 0) {
+      console.warn(`[dishesByCategoriesDbFirst] No dishes found for categories: ${normalizedCategories.join(", ")}`);
+      return [];
+    }
+
+    // Apply filters
+    const norm = (s: string) => s.trim().toLowerCase();
+    const selectedTags = tags.map(norm);
+    const excludedAllergens = allergens.map(norm);
+
+    const filtered = allDishes.filter((d) => {
+      const rTags = d.tags.map(norm);
+      const rAllergens = d.allergens.map(norm);
+
+      // TAGS: keep dish only if it contains ALL selected tags
+      const tagsOk =
+        selectedTags.length === 0 ||
+        selectedTags.every((t) => rTags.includes(t));
+
+      // ALLERGENS: EXCLUDE dish if it contains ANY selected allergen
+      const allergensOk =
+        excludedAllergens.length === 0 ||
+        rAllergens.every((a) => !excludedAllergens.includes(a));
+
+      return tagsOk && allergensOk;
+    });
+
+    // Remove duplicates by id
+    const seen = new Set<string>();
+    const deduped = filtered.filter((d) => {
+      if (seen.has(d.id)) return false;
+      seen.add(d.id);
+      return true;
+    });
+
+    console.log(`[dishesByCategoriesDbFirst] After filtering: ${deduped.length} dishes`);
+    return deduped;
+  } catch (error) {
+    console.error(`[dishesByCategoriesDbFirst] Error:`, error);
+    return [];
   }
-
-  // Apply filters
-  const norm = (s: string) => s.trim().toLowerCase();
-  const selectedTags = tags.map(norm);
-  const excludedAllergens = allergens.map(norm);
-
-  const filtered = allDishes.filter((d) => {
-    const rTags = d.tags.map(norm);
-    const rAllergens = d.allergens.map(norm);
-
-    // TAGS: keep dish only if it contains ALL selected tags
-    const tagsOk =
-      selectedTags.length === 0 ||
-      selectedTags.every((t) => rTags.includes(t));
-
-    // ALLERGENS: EXCLUDE dish if it contains ANY selected allergen
-    const allergensOk =
-      excludedAllergens.length === 0 ||
-      rAllergens.every((a) => !excludedAllergens.includes(a));
-
-    return tagsOk && allergensOk;
-  });
-
-  // Remove duplicates by id
-  const seen = new Set<string>();
-  return filtered.filter((d) => {
-    if (seen.has(d.id)) return false;
-    seen.add(d.id);
-    return true;
-  });
 }
