@@ -11,7 +11,7 @@ import { cn } from "@/components/ui/cn";
 import Modal from "@/components/ui/Modal";
 import RecipePanel from "@/components/RecipePanel";
 import MapWithPins from "@/components/MapWithPins";
-import VideoPanel, {Video} from "@/components/VideoPanel";
+import VideoPanel, { Video } from "@/components/VideoPanel";
 
 
 type Venue = {
@@ -68,22 +68,23 @@ function HomePage() {
       return;
     }
     setBusy(true);
+    setSelection([]); // Clear previous selection immediately
     try {
       console.log("Spinning with:", { categories, dishCount, tags: selectedTags, allergens: selectedAllergens });
-      
+
       // Add timeout to prevent hanging
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
+
       const res = await fetch("/api/spin", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ categories, tags: selectedTags, allergens: selectedAllergens, locked, powerups, dishCount }),
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         const errorMsg = j.message || j.issues?.[0]?.message || `HTTP ${res.status}`;
@@ -92,7 +93,7 @@ function HomePage() {
         setBusy(false);
         return;
       }
-      
+
       const data = await res.json();
       console.log("Spin response:", data);
 
@@ -103,13 +104,16 @@ function HomePage() {
         return;
       }
 
+      // Delay setting selection to allow spin animation to complete (1.5s + buffer)
+      await new Promise(resolve => setTimeout(resolve, 1600));
       setSelection(data.selection);
       setRecipes(null);
       setVenues(null);
       setOpenVideoModal(false);
       setCooldownMs(3000);
 
-      await fetchVideos(data.selection);
+      // Fetch videos in background so the UI can reveal selection immediately
+      fetchVideos(data.selection).catch((e) => console.error("fetchVideos failed:", e));
     } catch (error) {
       console.error("Spin error:", error);
       if (error instanceof Error && error.name === "AbortError") {
@@ -240,16 +244,16 @@ function HomePage() {
         <section className="rounded-2xl border bg-white p-6 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
           <h2 className="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-100">Selected Dishes</h2>
           <ul className="mb-4 space-y-2">
-            {selection.map((d) => (
-              <li key={d.id} className="flex items-center gap-2 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+            {selection.map((d, i) => (
+              <li key={`${d.id}_${i}`} className="flex items-center gap-2 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
                 <span className="font-semibold text-neutral-900 dark:text-neutral-100">{d.name}</span>
                 <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">({d.category})</span>
               </li>
             ))}
           </ul>
           <div className="flex gap-3">
-            <button 
-              className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 hover:scale-105 active:scale-95" 
+            <button
+              className="rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-blue-600 hover:to-blue-700 hover:scale-105 active:scale-95"
               onClick={() => setOpenVideoModal(true)}
             >
               🍳 Cook at Home

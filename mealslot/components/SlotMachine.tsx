@@ -146,6 +146,7 @@ export function SlotMachine({ reelCount, onSpin, cooldownMs, busy, selection }: 
             >
               <SlotReel
                 dish={dishesByIndex[i]}
+                reelIndex={i}
                 locked={!!locked[i]}
                 onToggle={() => toggleLock(i)}
                 isSpinning={spinningReels.has(i)}
