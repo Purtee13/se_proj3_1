@@ -108,6 +108,8 @@ function HomePage() {
       // Merge new selection with locked dishes - API should return locked dishes, but preserve from previous if API doesn't match
       const lockedMap = new Map(locked.map(l => [l.index, l.dishId]));
       const mergedSelection: Dish[] = [];
+      
+      // Build the selection array maintaining proper index alignment
       for (let i = 0; i < dishCount; i++) {
         const lockedDishId = lockedMap.get(i);
         if (lockedDishId) {
@@ -118,18 +120,22 @@ function HomePage() {
           } else if (previousSelection[i]?.id === lockedDishId) {
             // API didn't return the locked dish, but previous selection has it - preserve it
             mergedSelection[i] = previousSelection[i];
-          } else {
+          } else if (data.selection[i]) {
             // Fallback to API response if previous selection doesn't match either
             mergedSelection[i] = data.selection[i];
           }
+          // If none match, mergedSelection[i] will be undefined (sparse array)
         } else {
-          // Not locked - use new dish from API response
-          mergedSelection[i] = data.selection[i];
+          // Not locked - always use new dish from API response
+          if (data.selection[i]) {
+            mergedSelection[i] = data.selection[i];
+          }
         }
       }
 
       // Set selection immediately so dishes appear on cards
-      // Create a new array reference to ensure React detects the change
+      // The API should return dishes for all requested slots, so mergedSelection should be complete
+      // Create new array reference to ensure React detects the change
       setSelection([...mergedSelection]);
       
       // Keep busy state for a bit to allow reveal animation

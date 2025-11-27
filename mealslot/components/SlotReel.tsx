@@ -40,7 +40,7 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
               animate={{ 
                 opacity: 1, 
                 y: 0,
-                scale: isRevealing ? [1, 1.1, 1] : 1,
+                scale: isRevealing ? 1.1 : 1,
               }}
               exit={{ opacity: 0, y: -20 }}
               transition={{
@@ -48,6 +48,13 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
                 stiffness: 300,
                 damping: 25,
                 opacity: { duration: 0.3 },
+                scale: isRevealing ? {
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                  repeat: 1,
+                  repeatType: "reverse" as const,
+                } : { type: "spring", stiffness: 300, damping: 25 },
               }}
             >
               <div className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
