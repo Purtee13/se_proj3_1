@@ -25,6 +25,13 @@ const noFoucScript = `
       try { localStorage.setItem('theme', next ? 'dark' : 'light'); } catch {}
       return next;
     };
+    // Remove known extension-injected attributes (e.g. Grammarly) before React hydration
+    try {
+      var attrs = ['data-new-gr-c-s-check-loaded', 'data-gr-ext-installed'];
+      attrs.forEach(function(a) {
+        document.querySelectorAll('['+a+']').forEach(function(el){ el.removeAttribute(a); });
+      });
+    } catch(e) {}
   } catch(e) {}
 })();
 `;

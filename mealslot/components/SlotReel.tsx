@@ -7,13 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   dish?: Dish;
+  reelIndex?: number;
   locked: boolean;
   onToggle(): void;
   isSpinning?: boolean;
   isRevealing?: boolean;
 };
 
-export default function SlotReel({ dish, locked, onToggle, isSpinning = false, isRevealing = false }: Props) {
+export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning = false, isRevealing = false }: Props) {
   return (
     <motion.div
       className="flex h-48 w-full flex-col justify-between rounded-2xl border bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
@@ -59,7 +60,7 @@ export default function SlotReel({ dish, locked, onToggle, isSpinning = false, i
             </motion.div>
           ) : dish ? (
             <motion.div
-              key={dish.id}
+              key={`${dish.id}_${reelIndex ?? ""}`}
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ 
                 opacity: 1, 

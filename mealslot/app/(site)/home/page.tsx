@@ -112,7 +112,8 @@ function HomePage() {
       setOpenVideoModal(false);
       setCooldownMs(3000);
 
-      await fetchVideos(data.selection);
+      // Fetch videos in background so the UI can reveal selection immediately
+      fetchVideos(data.selection).catch((e) => console.error("fetchVideos failed:", e));
     } catch (error) {
       console.error("Spin error:", error);
       if (error instanceof Error && error.name === "AbortError") {
@@ -243,8 +244,8 @@ function HomePage() {
         <section className="rounded-2xl border bg-white p-6 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
           <h2 className="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-100">Selected Dishes</h2>
           <ul className="mb-4 space-y-2">
-            {selection.map((d) => (
-              <li key={d.id} className="flex items-center gap-2 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+            {selection.map((d, i) => (
+              <li key={`${d.id}_${i}`} className="flex items-center gap-2 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
                 <span className="font-semibold text-neutral-900 dark:text-neutral-100">{d.name}</span>
                 <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">({d.category})</span>
               </li>
