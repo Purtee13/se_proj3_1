@@ -68,7 +68,8 @@ function HomePage() {
       return;
     }
     setBusy(true);
-    setSelection([]); // Clear previous selection immediately
+    // Preserve previous selection so locked dishes remain visible during spin
+    const previousSelection = selection;
     try {
       console.log("Spinning with:", { categories, dishCount, tags: selectedTags, allergens: selectedAllergens });
 
@@ -104,16 +105,41 @@ function HomePage() {
         return;
       }
 
-      // Delay setting selection to allow spin animation to complete (1.5s + buffer)
+      // Merge new selection with locked dishes - API should return locked dishes, but preserve from previous if API doesn't match
+      const lockedMap = new Map(locked.map(l => [l.index, l.dishId]));
+      const mergedSelection: Dish[] = [];
+      for (let i = 0; i < dishCount; i++) {
+        const lockedDishId = lockedMap.get(i);
+        if (lockedDishId) {
+          // This slot is locked - prefer API response if it matches, otherwise use previous selection
+          if (data.selection[i]?.id === lockedDishId) {
+            // API returned the locked dish - use it (might have updated data)
+            mergedSelection[i] = data.selection[i];
+          } else if (previousSelection[i]?.id === lockedDishId) {
+            // API didn't return the locked dish, but previous selection has it - preserve it
+            mergedSelection[i] = previousSelection[i];
+          } else {
+            // Fallback to API response if previous selection doesn't match either
+            mergedSelection[i] = data.selection[i];
+          }
+        } else {
+          // Not locked - use new dish from API response
+          mergedSelection[i] = data.selection[i];
+        }
+      }
+
+      // Set selection immediately so dishes appear on cards
+      setSelection(mergedSelection);
+      
+      // Keep busy state for a bit to allow reveal animation
       await new Promise(resolve => setTimeout(resolve, 1600));
-      setSelection(data.selection);
       setRecipes(null);
       setVenues(null);
       setOpenVideoModal(false);
       setCooldownMs(3000);
 
       // Fetch videos in background so the UI can reveal selection immediately
-      fetchVideos(data.selection).catch((e) => console.error("fetchVideos failed:", e));
+      fetchVideos(mergedSelection).catch((e) => console.error("fetchVideos failed:", e));
     } catch (error) {
       console.error("Spin error:", error);
       if (error instanceof Error && error.name === "AbortError") {

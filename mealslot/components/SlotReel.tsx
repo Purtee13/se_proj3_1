@@ -33,7 +33,31 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
     >
       <div className="min-h-16 overflow-hidden">
         <AnimatePresence mode="wait">
-          {isSpinning ? (
+          {dish ? (
+            <motion.div
+              key={`${dish.id}_${reelIndex ?? ""}`}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                scale: isRevealing ? [1, 1.1, 1] : 1,
+              }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 25,
+                opacity: { duration: 0.3 },
+              }}
+            >
+              <div className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                {dish.name}
+              </div>
+              <div className="mt-1 text-xs font-medium text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">
+                {dish.category}
+              </div>
+            </motion.div>
+          ) : isSpinning ? (
             <motion.div
               key="spinning"
               initial={{ opacity: 0, y: 20 }}
@@ -57,30 +81,6 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
               className="text-base font-semibold text-neutral-400"
             >
               Spinning...
-            </motion.div>
-          ) : dish ? (
-            <motion.div
-              key={`${dish.id}_${reelIndex ?? ""}`}
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
-                scale: isRevealing ? [1, 1.1, 1] : 1,
-              }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 25,
-                opacity: { duration: 0.3 },
-              }}
-            >
-              <div className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-                {dish.name}
-              </div>
-              <div className="mt-1 text-xs font-medium text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">
-                {dish.category}
-              </div>
             </motion.div>
           ) : (
             <motion.div

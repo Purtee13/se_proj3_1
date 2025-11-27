@@ -42,17 +42,28 @@ export function SlotMachine({ reelCount, onSpin, cooldownMs, busy, selection }: 
     return out;
   }, [reelCount, selection]);
 
+  // Preserve locks when selection changes - only clear if dish ID no longer matches
   useEffect(() => {
-    const next: Record<number, string> = {};
-    dishesByIndex.forEach((d, i) => {
-      const currentLocked = locked[i];
-      if (currentLocked && d && currentLocked === d.id) {
-        next[i] = currentLocked;
-      }
+    setLocked((prev) => {
+      const next: Record<number, string> = {};
+      // Preserve all existing locks that still match their dishes
+      dishesByIndex.forEach((d, i) => {
+        const currentLocked = prev[i];
+        if (currentLocked) {
+          // Keep the lock if the dish at this index matches the locked dish ID
+          if (d && currentLocked === d.id) {
+            next[i] = currentLocked;
+          } else if (!d) {
+            // If no dish yet, preserve the lock (during spin animation)
+            next[i] = currentLocked;
+          }
+          // Otherwise, the dish changed and doesn't match the lock, so we clear it
+        }
+      });
+      return next;
     });
-    setLocked(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selection && selection.map((d) => d.id).join("|")]);
+  }, [selection && selection.map((d) => d?.id ?? "").join("|")]);
 
   // Handle spin animation
   useEffect(() => {
