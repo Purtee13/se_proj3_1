@@ -78,6 +78,20 @@ export function SlotMachine({ reelCount, onSpin, cooldownMs, busy, selection }: 
         }
       }
       setSpinningReels(spinning);
+    } else if (busy && isSpinning) {
+      // We're still busy but might have dishes now - stop spinning for reels that have dishes
+      if (selection && selection.length > 0) {
+        setSpinningReels((prev) => {
+          const next = new Set(prev);
+          for (let i = 0; i < reelCount; i++) {
+            // If this reel has a dish in the selection, remove it from spinning
+            if (selection[i] && selection[i].id) {
+              next.delete(i);
+            }
+          }
+          return next;
+        });
+      }
     } else if (!busy && isSpinning && selection && selection.length > 0) {
       // Start reveal animation
       setIsSpinning(false);

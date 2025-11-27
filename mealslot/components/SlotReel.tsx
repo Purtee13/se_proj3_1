@@ -32,7 +32,7 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
       }}
     >
       <div className="min-h-16 overflow-hidden">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {dish ? (
             <motion.div
               key={`${dish.id}_${reelIndex ?? ""}`}
@@ -65,7 +65,7 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
                 opacity: [0.3, 1, 0.3],
                 y: [0, -10, 0],
               }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
               transition={{
                 opacity: {
                   duration: 0.5,

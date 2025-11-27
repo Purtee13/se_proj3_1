@@ -129,7 +129,8 @@ function HomePage() {
       }
 
       // Set selection immediately so dishes appear on cards
-      setSelection(mergedSelection);
+      // Create a new array reference to ensure React detects the change
+      setSelection([...mergedSelection]);
       
       // Keep busy state for a bit to allow reveal animation
       await new Promise(resolve => setTimeout(resolve, 1600));
