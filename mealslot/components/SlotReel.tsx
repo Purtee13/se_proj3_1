@@ -18,13 +18,13 @@ type Props = {
 export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning = false, isRevealing = false }: Props) {
   return (
     <motion.div
-      className="flex h-48 w-full flex-col justify-between rounded-2xl border bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+      className="flex h-48 w-full flex-col justify-between rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
       initial={false}
       animate={{
         scale: isRevealing && dish ? 1.05 : 1,
         boxShadow: isRevealing && dish 
-          ? "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          : "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+          ? "0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08)"
+          : "0 4px 12px rgba(0, 0, 0, 0.08)",
       }}
       transition={{
         type: "spring",
@@ -86,7 +86,7 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
                   ease: "easeInOut",
                 },
               }}
-              className="text-base font-semibold text-neutral-400"
+              className="text-base font-semibold text-neutral-400 dark:text-neutral-500"
             >
               Spinning...
             </motion.div>
@@ -95,7 +95,7 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
               key="empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
-              className="text-base font-semibold text-neutral-300 dark:text-neutral-700"
+              className="text-base font-semibold text-neutral-300 dark:text-neutral-600"
             >
               —
             </motion.div>
@@ -105,10 +105,10 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
       <div className="flex flex-col items-stretch">
         <motion.button
           className={cn(
-            "rounded-lg border px-4 py-2 text-sm font-medium transition-colors",
+            "rounded-full border px-4 py-2 text-sm font-medium transition-colors shadow-sm",
             locked 
               ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100" 
-              : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
+              : "bg-[#f0ece6] text-gray-800 border-neutral-200 hover:bg-[#e9e4dd] dark:bg-[#26282d] dark:text-neutral-200 dark:border-[#303237] dark:hover:bg-[#303237]"
           )}
           onClick={onToggle}
           aria-pressed={locked}

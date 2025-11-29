@@ -10,9 +10,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
   const isLandingPage = pathname === "/" || pathname === "/login";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+    <div className="min-h-screen bg-gradient-to-br from-[#faf9f7] via-[#fefefe] to-[#f5f4f2] text-neutral-900 dark:bg-gradient-to-br dark:from-[#1b1d22] dark:via-[#1e2026] dark:to-[#111215] dark:text-neutral-100">
       {!isLandingPage && (
-        <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-950/80">
+        <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-md dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
           <SiteNav />
         </header>
       )}

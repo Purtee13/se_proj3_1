@@ -26,13 +26,13 @@ export default async function PublicTriedPage({ params }: Props) {
         {items.length === 0 ? (
           <div className="text-sm text-neutral-500">No tried dishes yet.</div>
         ) : items.map(it => (
-          <div key={it.id} className="rounded-2xl border bg-white p-3 shadow-sm">
+          <div key={it.id} className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-3 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
             <div className="flex items-center justify-between">
               <div className="font-semibold">{it.dish?.name}</div>
-              <div className="text-sm text-neutral-600">{it.rating ? `★ ${it.rating}` : null}</div>
+              <div className="text-sm text-neutral-600 dark:text-neutral-300">{it.rating ? `★ ${it.rating}` : null}</div>
             </div>
-            <div className="mt-2 text-xs text-neutral-500">{new Date(it.dateTried).toLocaleString()}</div>
-            <div className="mt-2 text-sm text-neutral-700">{it.notes ?? <span className="opacity-60">No notes</span>}</div>
+            <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{new Date(it.dateTried).toLocaleString()}</div>
+            <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">{it.notes ?? <span className="opacity-60">No notes</span>}</div>
           </div>
         ))}
       </div>

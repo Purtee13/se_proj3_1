@@ -123,7 +123,7 @@ export function SlotMachine({ reelCount, onSpin, cooldownMs, busy, selection }: 
 
   return (
     <motion.section
-      className="rounded-2xl border bg-white p-6 shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+      className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

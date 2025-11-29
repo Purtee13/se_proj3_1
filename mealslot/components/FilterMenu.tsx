@@ -45,12 +45,12 @@ export default function FilterMenu({ onTagChange, onAllergenChange }: FilterMenu
 	};
 
 	return (
-		<section className="rounded-2xl border bg-white p-6 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+		<section className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
 			<h2 className="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-100">Filters</h2>
 
 			{/* Tags Dropdown */}
 			<details 
-				className="mb-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 transition-all hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+				className="mb-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4 transition-all hover:bg-neutral-100 dark:border-[#303237] dark:bg-[#26282d] dark:hover:bg-[#2e3035]"
 				open={tagsOpen}
 				onToggle={(e) => setTagsOpen((e.target as HTMLDetailsElement).open)}
 			>
@@ -83,7 +83,7 @@ export default function FilterMenu({ onTagChange, onAllergenChange }: FilterMenu
 										"rounded-full border-2 px-4 py-2 text-sm font-medium transition-all",
 										selectedTags.includes(tag)
 											? "bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-500 shadow-md"
-											: "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
+											: "bg-[#f0ece6] text-gray-800 border-neutral-200 hover:bg-[#e9e4dd] dark:bg-[#26282d] dark:text-neutral-200 dark:border-[#303237] dark:hover:bg-[#303237]"
 									)}
 									aria-pressed={selectedTags.includes(tag)}
 									whileHover={{ scale: 1.05 }}
@@ -99,7 +99,7 @@ export default function FilterMenu({ onTagChange, onAllergenChange }: FilterMenu
 
 			{/* Allergens Dropdown */}
 			<details 
-				className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 transition-all hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+				className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 transition-all hover:bg-neutral-100 dark:border-[#303237] dark:bg-[#26282d] dark:hover:bg-[#2e3035]"
 				open={allergensOpen}
 				onToggle={(e) => setAllergensOpen((e.target as HTMLDetailsElement).open)}
 			>
@@ -132,7 +132,7 @@ export default function FilterMenu({ onTagChange, onAllergenChange }: FilterMenu
 										"rounded-full border-2 px-4 py-2 text-sm font-medium transition-all",
 										selectedAllergens.includes(a)
 											? "bg-gradient-to-r from-red-500 to-red-600 text-white border-red-500 shadow-md"
-											: "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
+											: "bg-[#f0ece6] text-gray-800 border-neutral-200 hover:bg-[#e9e4dd] dark:bg-[#26282d] dark:text-neutral-200 dark:border-[#303237] dark:hover:bg-[#303237]"
 									)}
 									aria-pressed={selectedAllergens.includes(a)}
 									whileHover={{ scale: 1.05 }}

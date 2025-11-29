@@ -21,7 +21,7 @@ export function PowerUps({
   ];
 
   return (
-    <section className="rounded-2xl border bg-white p-6 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+    <section className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
       <h2 className="mb-4 text-xl font-bold text-neutral-900 dark:text-neutral-100">Power-Ups</h2>
       <div className="flex flex-wrap gap-3">
         {powerUps.map(({ key, label, emoji, color }) => (

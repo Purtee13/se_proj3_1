@@ -39,7 +39,7 @@ export default function LoginForm() {
         transition={{ duration: 0.5 }}
       >
         <motion.div
-          className="rounded-2xl border border-neutral-200 bg-white p-8 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900"
+          className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}

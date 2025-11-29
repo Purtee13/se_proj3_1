@@ -51,7 +51,7 @@ export default function SiteNav() {
             </span>
             <motion.button
               onClick={logout}
-              className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-all hover:bg-neutral-50 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              className="rounded-full border border-neutral-200 bg-[#f0ece6] px-4 py-2 text-sm font-medium text-gray-800 transition-all hover:bg-[#e9e4dd] shadow-sm dark:border-[#303237] dark:bg-[#26282d] dark:text-neutral-200 dark:hover:bg-[#303237] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -62,7 +62,7 @@ export default function SiteNav() {
           <>
             <Link 
               href="/login" 
-              className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-all hover:bg-neutral-50 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              className="rounded-full border border-neutral-200 bg-[#f0ece6] px-4 py-2 text-sm font-medium text-gray-800 transition-all hover:bg-[#e9e4dd] shadow-sm dark:border-[#303237] dark:bg-[#26282d] dark:text-neutral-200 dark:hover:bg-[#303237] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
             >
               Login
             </Link>

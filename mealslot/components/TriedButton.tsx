@@ -72,10 +72,10 @@ export default function TriedButton({ dishId, dishName }: { dishId: string; dish
       onClick={onClick}
       disabled={loading}
       className={[
-        "mt-2 inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium transition-all",
+        "mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition-all shadow-sm",
         isTried
-          ? "bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm"
-          : "bg-white text-neutral-700 border border-neutral-200 hover:bg-neutral-50",
+          ? "bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700"
+          : "bg-[#f0ece6] text-gray-800 border border-neutral-200 hover:bg-[#e9e4dd] dark:bg-[#26282d] dark:text-neutral-200 dark:border-[#303237] dark:hover:bg-[#303237]",
       ].join(" ")}
     >
       {isTried ? "Tried ✅" : "Tried it"}

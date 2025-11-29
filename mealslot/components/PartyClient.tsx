@@ -47,10 +47,10 @@ function ToggleChip({
       type="button"
       onClick={onClick}
       className={[
-        "rounded-full border px-3 py-1 text-xs transition-colors",
+        "rounded-full border px-3 py-1 text-xs transition-colors shadow-sm",
         active
-          ? "bg-neutral-200 text-neutral-900 border-neutral-300 dark:bg-neutral-700 dark:text-white dark:border-neutral-600"
-          : "bg-white text-neutral-900 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800",
+          ? "bg-blue-500 text-white border-blue-600 dark:bg-blue-600 dark:text-white dark:border-blue-700"
+          : "bg-[#f0ece6] text-gray-800 border-neutral-200 hover:bg-[#e9e4dd] dark:bg-[#26282d] dark:text-neutral-200 dark:border-[#303237] dark:hover:bg-[#303237]",
       ].join(" ")}
       aria-pressed={!!active}
     >
@@ -63,10 +63,10 @@ function Ribbon({children}:{children:React.ReactNode}) {
   return <div className="mb-2 text-sm font-semibold">{children}</div>;
 }
 function Pill({children}:{children:React.ReactNode}) {
-  return <span className="rounded-full border px-2 py-0.5 text-xs bg-neutral-100 border-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100">{children}</span>;
+  return <span className="rounded-full border px-2 py-0.5 text-xs bg-[#f0ece6] border-neutral-200 text-gray-800 dark:bg-[#26282d] dark:border-[#303237] dark:text-neutral-200">{children}</span>;
 }
 function Card({children}:{children:React.ReactNode}) {
-  return <div className="rounded-2xl border bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">{children}</div>;
+  return <div className="rounded-2xl border border-neutral-200 bg-white/90 backdrop-blur-md p-3 shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:border-[#303237] dark:bg-[#1c1e23]/90 dark:shadow-[0_4px_12px_rgba(0,0,0,0.25)]">{children}</div>;
 }
 
 /** ————— Component ————— */
