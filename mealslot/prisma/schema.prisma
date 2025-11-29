@@ -19,6 +19,7 @@ model User {
   favorites   Favorite[]
   spins       Spin[]
   PartyMember PartyMember[]
+  triedMeals  TriedMeal[]
 }
 
 model Category {
@@ -43,6 +44,7 @@ model Dish {
 
   // add this line so Favorite.dish has an opposite side
   favorites Favorite[]
+  triedMeals TriedMeal[]
 }
 
 model Spin {
