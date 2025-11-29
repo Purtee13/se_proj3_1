@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFoucScript }} />
       </head>
-      <body className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <body className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
         <ThemeProvider>
           <AuthProvider>
             {children}

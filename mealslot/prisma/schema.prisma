@@ -84,3 +84,16 @@ model Favorite {
   dishId String
   dish   Dish   @relation(fields: [dishId], references: [id])
 }
+
+model TriedMeal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  dishId    String
+  dish      Dish     @relation(fields: [dishId], references: [id])
+
+  dateTried DateTime @default(now())
+  notes     String?
+  rating    Int?
+}

@@ -34,6 +34,13 @@ export default function SiteNav() {
           >
             Party Mode
           </Link>
+            <Link 
+              href="/tried" 
+              prefetch 
+              className="text-sm font-medium text-neutral-700 transition-colors hover:text-orange-600 dark:text-neutral-300 dark:hover:text-orange-400"
+            >
+              Tried Dishes
+            </Link>
         </div>
       </div>
       <div className="flex items-center gap-4">

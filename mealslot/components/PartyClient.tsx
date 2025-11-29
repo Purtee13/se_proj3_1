@@ -6,6 +6,7 @@ import { z } from "zod";
 import { PrefsSchema, DietEnum, AllergenEnum } from "@/lib/party";
 import { getRealtimeForRoom } from "@/lib/realtime";
 import PlacesMapCard from "@/components/PlacesMapCard";
+import TriedPreview from "@/components/TriedPreview";
 
 /** ——— Presence tuning ——— */
 const HEARTBEAT_MS = 15_000;   // send a beat every 15s
@@ -739,6 +740,10 @@ export default function PartyClient({ code: initialCode }: { code?: string }) {
                 </span>
               );
             })}
+          </div>
+
+          <div className="mb-3">
+            <TriedPreview />
           </div>
 
           {/* Categories & power-ups */}

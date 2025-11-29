@@ -4,6 +4,7 @@ import React from "react"
 import { Dish } from "@/lib/schemas";
 import { cn } from "./ui/cn";
 import { motion, AnimatePresence } from "framer-motion";
+import TriedButton from "@/components/TriedButton";
 
 type Props = {
   dish?: Dish;
@@ -101,21 +102,24 @@ export default function SlotReel({ dish, reelIndex, locked, onToggle, isSpinning
           )}
         </AnimatePresence>
       </div>
-      <motion.button
-        className={cn(
-          "rounded-lg border px-4 py-2 text-sm font-medium transition-colors",
-          locked 
-            ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100" 
-            : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
-        )}
-        onClick={onToggle}
-        aria-pressed={locked}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        disabled={isSpinning || !dish}
-      >
-        {locked ? "🔒 Locked" : "🔓 Lock"}
-      </motion.button>
+      <div className="flex flex-col items-stretch">
+        <motion.button
+          className={cn(
+            "rounded-lg border px-4 py-2 text-sm font-medium transition-colors",
+            locked 
+              ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100" 
+              : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-700"
+          )}
+          onClick={onToggle}
+          aria-pressed={locked}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          disabled={isSpinning || !dish}
+        >
+          {locked ? "🔒 Locked" : "🔓 Lock"}
+        </motion.button>
+        <TriedButton dishId={dish?.id ?? ""} dishName={dish?.name} />
+      </div>
     </motion.div>
   );
 }
