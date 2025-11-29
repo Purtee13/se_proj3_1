@@ -31,10 +31,10 @@ export default function TriedPage() {
     <div className="mx-auto max-w-4xl px-4 py-6">
       <h1 className="mb-4 text-2xl font-bold">Tried Dishes</h1>
       {!user ? (
-        <div className="text-sm dark:text-neutral-300">Please log in to view your tried dishes.</div>
+        <div className="text-sm">Please log in to view your tried dishes.</div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {loading ? <div className="dark:text-neutral-300">Loading…</div> : (
+          {loading ? <div className="text-sm dark:text-neutral-300">Loading…</div> : (
             items.length === 0 ? <div className="text-sm text-neutral-500 dark:text-neutral-400">You haven't marked any dishes yet.</div>
             : items.map(it => (
               <TriedCard key={it.id} item={it} onDelete={() => setItems(items.filter(x => x.id !== it.id))} onUpdate={(notes,rating)=>{

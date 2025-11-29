@@ -20,27 +20,9 @@ export default function SiteNav() {
           🎰 MealSlot
         </Link>
         <div className="flex items-center gap-4">
-          <Link 
-            href="/home" 
-            prefetch 
-            className="text-sm font-medium text-neutral-700 transition-colors hover:text-orange-600 dark:text-neutral-300 dark:hover:text-orange-400"
-          >
-            Home
-          </Link>
-          <Link 
-            href="/party" 
-            prefetch 
-            className="text-sm font-medium text-neutral-700 transition-colors hover:text-orange-600 dark:text-neutral-300 dark:hover:text-orange-400"
-          >
-            Party Mode
-          </Link>
-            <Link 
-              href="/tried" 
-              prefetch 
-              className="text-sm font-medium text-neutral-700 transition-colors hover:text-orange-600 dark:text-neutral-300 dark:hover:text-orange-400"
-            >
-              Tried Dishes
-            </Link>
+          <Link href="/home" prefetch className="text-sm font-medium transition-colors btn-chip">Home</Link>
+          <Link href="/party" prefetch className="text-sm font-medium transition-colors btn-chip">Party Mode</Link>
+          <Link href="/tried" prefetch className="text-sm font-medium transition-colors btn-chip">Tried Dishes</Link>
         </div>
       </div>
       <div className="flex items-center gap-4">
@@ -49,29 +31,12 @@ export default function SiteNav() {
             <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
               👤 {user.username}
             </span>
-            <motion.button
-              onClick={logout}
-              className="rounded-full border border-neutral-200 bg-[#f0ece6] px-4 py-2 text-sm font-medium text-gray-800 transition-all hover:bg-[#e9e4dd] shadow-sm dark:border-[#303237] dark:bg-[#26282d] dark:text-neutral-200 dark:hover:bg-[#303237] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Logout
-            </motion.button>
+            <motion.button onClick={logout} className="rounded-full btn-chip px-4 py-2" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>Logout</motion.button>
           </>
         ) : (
           <>
-            <Link 
-              href="/login" 
-              className="rounded-full border border-neutral-200 bg-[#f0ece6] px-4 py-2 text-sm font-medium text-gray-800 transition-all hover:bg-[#e9e4dd] shadow-sm dark:border-[#303237] dark:bg-[#26282d] dark:text-neutral-200 dark:hover:bg-[#303237] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-            >
-              Login
-            </Link>
-            <Link 
-              href="/signup" 
-              className="rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-orange-600 hover:to-orange-700"
-            >
-              Sign Up
-            </Link>
+            <Link href="/login" className="rounded-full btn-chip px-4 py-2">Login</Link>
+            <Link href="/signup" className="rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:from-orange-600 hover:to-orange-700">Sign Up</Link>
           </>
         )}
         <ThemeToggle />
