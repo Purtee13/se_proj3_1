@@ -35,7 +35,8 @@ async function createRoute() {
 }
 
 async function spinRoute(req: Request) {
-    const { code, userId, action, dishCount } = await req.json();
+    const body = await req.json();
+    const { code, userId, action, dishCount, dishId, vote } = body;
     const r = store.ensure(code, dishCount || 3);
     const isHost = userId === r.hostId;
 
@@ -59,7 +60,6 @@ async function spinRoute(req: Request) {
         const joined = r.peers.some((p: any) => p.id === userId);
         if (!joined) return new Response(JSON.stringify({ code: "NOT_JOINED" }), { status: 401 });
 
-        const { dishId, vote } = await req.json();
         if (!r.votes[dishId]) r.votes[dishId] = { up: new Set(), reroll: new Set() };
         r.votes[dishId].up.delete(userId);
         r.votes[dishId].reroll.delete(userId);
