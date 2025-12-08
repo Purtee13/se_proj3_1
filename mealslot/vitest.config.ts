@@ -9,5 +9,7 @@ export default defineConfig({
       reporter: ['text', 'lcov'], // lcov file will be written to coverage/lcov.info
       // optionally: provider: 'c8' or other settings
     },
+    // Run only the aggregated test file to avoid import/transform issues
+    include: ["tests/AllTests.ts"],
   },
 });
