@@ -1,8 +1,8 @@
-![Run Vitest](https://github.com/FSChuang/CSC510-SE-Group8/actions/workflows/test.yml/badge.svg)
-[![codecov](https://codecov.io/gh/FSChunag/CSC510-SE-Group8/branch/main/graph/badge.svg)](https://codecov.io/gh/FSChuang/CSC510-SE-Group8)
+[![Build Status](https://github.com/Purtee13/se_proj3_1/actions/workflows/ci.yml/badge.svg)](https://github.com/Purtee13/se_proj3_1/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Purtee13/se_proj3_1/branch/main/graph/badge.svg)](https://codecov.io/gh/Purtee13/se_proj3_1)
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Release](https://img.shields.io/github/v/release/FSChuang/CSC510-SE-Group8)
+![Release](https://img.shields.io/github/v/release/Purtee13/se_proj3_1)
 
 
 # MealSlot — MVP Scaffolding
