@@ -17,6 +17,12 @@ module.exports = {
   settings: {
     react: { version: "detect" }
   },
+  parserOptions: {
+    project: ["./tsconfig.json"],
+    tsconfigRootDir: __dirname,
+    ecmaVersion: 2020,
+    sourceType: "module"
+  },
   rules: {
     "react/react-in-jsx-scope": "off",
     "import/order": [
