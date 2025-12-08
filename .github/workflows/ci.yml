@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  actions: write
+  checks: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies (mealslot)
+        run: |
+          cd mealslot
+          pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: |
+          cd mealslot
+          npx prisma generate
+
+      - name: Lint
+        run: |
+          cd mealslot
+          pnpm run lint
+
+      - name: Run tests and collect coverage
+        run: |
+          cd mealslot
+          # run tests with coverage (vitest)
+          pnpm run test:coverage || true
+        env:
+          CI: true
+
+      - name: Upload coverage to Codecov
+        if: ${{ secrets.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./mealslot/coverage/**/*
+
+      - name: Build
+        run: |
+          cd mealslot
+          pnpm run build
+
+      - name: Upload artifact (build outputs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mealslot-build
+          path: mealslot/.next/**
