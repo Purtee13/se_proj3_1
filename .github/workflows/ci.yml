@@ -20,13 +20,16 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Enable corepack
+        run: corepack enable
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -35,7 +38,8 @@ jobs:
 
       - name: Install dependencies
         working-directory: mealslot
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
+
 
       - name: Generate Prisma client
         working-directory: mealslot
@@ -45,22 +49,24 @@ jobs:
         working-directory: mealslot
         run: pnpm run lint
 
+      # ---------------- Tests + coverage ----------------
       - name: Run tests with coverage
         working-directory: mealslot
         run: pnpm run test:coverage
         env:
           CI: true
+      # --------------------------------------------------
 
-      # -------- Codecov Upload --------
+      # ---------------- Upload to Codecov ----------------
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # required only for private repos
+          token: ${{ secrets.CODECOV_TOKEN }} # not needed for public repos
           files: ./mealslot/coverage/lcov.info
           fail_ci_if_error: false
-      # --------------------------------
+      # ---------------------------------------------------
 
-      - name: Build
+      - name: Build application
         working-directory: mealslot
         run: pnpm run build
 
@@ -68,4 +74,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mealslot-build
-          path: mealslot/.next
+          path: mealslot/.nexts
