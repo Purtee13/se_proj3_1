@@ -74,12 +74,10 @@ jobs:
       # --------------------------------------------------
 
       # ---------------- Upload to Codecov ----------------
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not needed for public repos
-          files: ./mealslot/coverage/lcov.info
-          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
       # ---------------------------------------------------
 
       - name: Build application
