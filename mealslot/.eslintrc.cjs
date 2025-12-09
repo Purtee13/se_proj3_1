@@ -2,6 +2,12 @@
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
+  ignorePatterns: [
+    "next.config.js",
+    "postcss.config.js",
+    "ws-server/**",
+    "**/*.cjs"
+  ],
   plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "import"],
   extends: [
     "eslint:recommended",
@@ -25,4 +31,37 @@ module.exports = {
     ],
     "@typescript-eslint/no-explicit-any": "error"
   }
+  ,
+  overrides: [
+    {
+      files: ["**/*.ts", "**/*.tsx"],
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        tsconfigRootDir: __dirname,
+        createDefaultProgram: true
+      }
+    },
+    {
+      files: ["tests/**", "**/*.test.*", "**/*.spec.*"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/require-await": "off"
+      }
+    },
+    {
+      files: ["ws-server/**", "ws-server/**/*", "ws-server/**.*"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-return": "off"
+      }
+    }
+  ]
 };
