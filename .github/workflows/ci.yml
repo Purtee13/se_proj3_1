@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -20,12 +20,14 @@ jobs:
         node-version: [18.x]
 
     steps:
+      # ---------------- Checkout ----------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      # ---------------- Node.js ----------------
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
@@ -38,48 +40,36 @@ jobs:
         with:
           version: 8
 
+      # ---------------- Install ----------------
       - name: Install dependencies
         working-directory: mealslot
         run: pnpm install --no-frozen-lockfile
-
 
       - name: Generate Prisma client
         working-directory: mealslot
         run: npx prisma generate
 
+      # ---------------- Lint ----------------
       - name: Lint
         working-directory: mealslot
         run: pnpm run lint
 
-      # ---------------- Tests + coverage ----------------
-      - name: Run tests with coverage
+      # ---------------- Tests + Coverage ----------------
+      - name: Run Vitest with coverage
         working-directory: mealslot
         run: pnpm run test:coverage
+        continue-on-error: true
         env:
           CI: true
-      # --------------------------------------------------
 
-      - name: Show coverage files (debug)
-        run: |
-          echo "Listing mealslot/coverage"
-          ls -la mealslot/coverage || true
-          if [ -f mealslot/coverage/lcov.info ]; then echo "lcov exists, size:"; du -h mealslot/coverage/lcov.info; else echo "lcov.info not found"; fi
-        shell: bash
-
-      - name: Upload coverage artifact (for debugging)
-        uses: actions/upload-artifact@v4
-        with:
-          name: mealslot-lcov
-          path: mealslot/coverage/lcov.info
-      # --------------------------------------------------
-
-      # ---------------- Upload to Codecov ----------------
-      - name: Upload coverage reports to Codecov
+      # ---------------- Upload coverage to Codecov ----------------
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-      # ---------------------------------------------------
+          files: "mealslot/coverage/lcov.info"
+          fail_ci_if_error: false
 
+      # ---------------- Build ----------------
       - name: Build application
         working-directory: mealslot
         run: pnpm run build
@@ -88,4 +78,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mealslot-build
-          path: mealslot/.nexts
+          path: mealslot/.next

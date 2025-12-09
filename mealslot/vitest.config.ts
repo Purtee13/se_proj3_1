@@ -1,15 +1,16 @@
 import { defineConfig } from "vitest/config";
+import path from "path";
 
 export default defineConfig({
+  root: __dirname, // ← forces Vitest to treat mealslot/ as project root
   test: {
     environment: "happy-dom",
     setupFiles: ["./tests/setupTests.ts"],
     globals: true,
-    coverage: {
-      reporter: ['text', 'lcov'], // lcov file will be written to coverage/lcov.info
-      // optionally: provider: 'c8' or other settings
-    },
-    // Run only the aggregated test file to avoid import/transform issues
     include: ["tests/AllTests.ts"],
+    coverage: {
+      reporter: ["text", "lcov"],
+      reportsDirectory: path.resolve(__dirname, "coverage"),
+    },
   },
 });
