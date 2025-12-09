@@ -58,7 +58,7 @@ jobs:
       # ---------------- Tests + Coverage ----------------
       - name: Run Vitest with coverage
         working-directory: mealslot
-        run: pnpm run test:coverage
+        run: npx vitest run --coverage
         continue-on-error: true
         env:
           CI: true
@@ -68,7 +68,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: "mealslot/coverage/lcov.info"
-          fail_ci_if_error: false
 
       # ---------------- Build ----------------
       - name: Build application
