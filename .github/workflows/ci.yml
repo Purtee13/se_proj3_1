@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -55,6 +57,20 @@ jobs:
         run: pnpm run test:coverage
         env:
           CI: true
+      # --------------------------------------------------
+
+      - name: Show coverage files (debug)
+        run: |
+          echo "Listing mealslot/coverage"
+          ls -la mealslot/coverage || true
+          if [ -f mealslot/coverage/lcov.info ]; then echo "lcov exists, size:"; du -h mealslot/coverage/lcov.info; else echo "lcov.info not found"; fi
+        shell: bash
+
+      - name: Upload coverage artifact (for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: mealslot-lcov
+          path: mealslot/coverage/lcov.info
       # --------------------------------------------------
 
       # ---------------- Upload to Codecov ----------------
